@@ -8,6 +8,9 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true, // nest will try to convert 'correct' type. so we don't have to use Type decorator in data transfer objects for example.
+      },
       forbidNonWhitelisted: true,
     }),
   );
