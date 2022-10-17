@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Scope } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Event } from 'src/events/entities/event.entity';
 import { CoffeesController } from './coffees.controller';
@@ -9,6 +9,17 @@ import { Flavor } from './entities/flavor.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Coffee, Event, Flavor])],
   controllers: [CoffeesController],
-  providers: [CoffeesService],
+  providers: [
+    {
+      provide: CoffeesService,
+      useClass: CoffeesService,
+    },
+    {
+      provide: 'COFFEE_BRANDS',
+      useFactory: () => ['Chibo', 'Nescafe'],
+      scope: Scope.DEFAULT,
+    },
+  ],
+  exports: [CoffeesService],
 })
 export class CoffeesModule {}
