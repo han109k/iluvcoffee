@@ -1,8 +1,10 @@
 import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
+import { ConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { Event } from 'src/events/entities/event.entity';
 import { DataSource, Repository } from 'typeorm';
+import coffeeConfig from './config/coffee.config';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
@@ -19,7 +21,16 @@ export class CoffeesService {
     private readonly connection: DataSource,
     @Inject('COFFEE_BRANDS')
     coffeeBrands: string[],
+    private readonly configService: ConfigService,
+    @Inject(coffeeConfig.KEY)
+    private readonly coffeesConfiguration: ConfigType<typeof coffeeConfig>, // for full type safety
   ) {
+    const databaseHost = this.configService.get(
+      'database.host',
+      'localhost', // default value
+    );
+    console.log('config service', databaseHost);
+    console.log('partial registeration', coffeesConfiguration.foo);
     console.log(coffeeBrands, 'coffeesService is instantiated');
   }
 
